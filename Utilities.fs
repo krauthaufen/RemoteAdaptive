@@ -4,6 +4,7 @@ open System
 open System.Threading
 open FSharp.Data.Adaptive
 
+
 let rand = Random()
 
 let startThread (action : unit -> unit) =
@@ -44,6 +45,7 @@ let mainLoop(input : clist<string>) =
 
 
 module AList =
+
     let observe (action : IndexList<'a> -> IndexListDelta<'a> -> unit) (list : alist<'a>) =
 
         // here we setup a thread that blocks until 'changesPending' is set to true
@@ -85,4 +87,10 @@ module AList =
                 subscription.Dispose()
                 running <- false
                 lock trigger (fun () -> changesPending <- true; Monitor.PulseAll trigger)
+        }
+
+    let toObservable (list : alist<'a>) =
+        { new IObservable<list<'a>> with
+            member x.Subscribe(obs : IObserver<list<'a>>) =
+                list |> observe (fun s _ -> obs.OnNext (IndexList.toList s))
         }
