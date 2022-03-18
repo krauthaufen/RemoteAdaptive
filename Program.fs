@@ -12,7 +12,6 @@ let input = clist ["a"; "b"]
 let dependentList = 
     input
     |> AList.map (fun el -> sprintf "%s:%d" el el.Length)
-    |> AList.takeA (cval 10)
     |> AList.pairwise
 
 
