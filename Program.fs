@@ -43,16 +43,17 @@ startThread <| fun () ->
         )
         
         let changes = reader.GetChanges AdaptiveToken.Top
-        let state = reader.State
+        if not (IndexListDelta.isEmpty changes) then
+            let state = reader.State
 
-        for index, operation in changes do
-            match operation with
-            | Set value -> 
-                printfn "   set(%A, %A)" index value
-            | Remove ->
-                printfn "   rem(%A)" index
+            for index, operation in changes do
+                match operation with
+                | Set value -> 
+                    printfn "   set(%A, %A)" index value
+                | Remove ->
+                    printfn "   rem(%A)" index
 
-        printfn "   result: %0A" (IndexList.toList state)
+            printfn "   result: %0A" (IndexList.toList state)
 
 
 // here's some code to update the list via the command-line
